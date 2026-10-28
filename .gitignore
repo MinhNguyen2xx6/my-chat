@@ -1,0 +1,57 @@
+# ==========================================
+# Environment Variables & Secrets (Bảo mật)
+# ==========================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.keystore
+*.jks
+
+# ==========================================
+# Node.js (Backend)
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+coverage/
+.node_repl_history
+
+# ==========================================
+# Android Studio & Java (Frontend)
+# ==========================================
+# Build outputs & caches
+.gradle/
+build/
+app/build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Local configuration file (chứa đường dẫn Android SDK của máy cá nhân)
+local.properties
+
+# Android Studio / IntelliJ IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+.navigation/
+
+# Signed APKs / AABs
+*.apk
+*.aab
+
+# ==========================================
+# OS & Editors
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
+*.bak
