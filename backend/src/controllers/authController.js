@@ -46,7 +46,7 @@ if (duplicate) {
 };
 
 
-
+//Ham signIn dang nhap
 export const signIn = async(req, res) => {
 
     try {
@@ -109,4 +109,27 @@ export const signIn = async(req, res) => {
         console.error("Loi khi goi signUp", error);
         return res.status(500).json({message:"Loi he thong khi dang nhap"});
     }
+};
+
+
+//Ham signOut dang xuat
+export const signOut = async(req, res) => {
+try {
+    //Lay refresh token tu cookie
+    const token = req.cookies?.refreshToken;
+
+    if (token){
+        //Xoa refresh token tu Session
+        await Session.deleteOne({refreshToken: token});
+        //Xoa cookie
+        res.clearCookie("refreshToken");
+    } return res.sendStatus(204);
+  
+} catch (error) {
+console.error("Loi khi goi signOut", error);
+return res.status(500).json({message: "Loi he thong khi dang xuat khoi tai khoan"});
+}
+
+
+
 };
