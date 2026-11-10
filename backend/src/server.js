@@ -20,6 +20,8 @@ app.use(cookieParser());
 //public routes
 app.use('/api/auth', authRoute);
 
+//health check
+app.get('/health', (req, res) => res.status(200).json({ ok: true }));
 
 //private routes
 app.use(protectedRoute); //middleware xac minh token

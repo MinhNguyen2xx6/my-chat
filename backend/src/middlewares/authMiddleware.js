@@ -16,7 +16,7 @@ export const protectedRoute = (req, res, next) => {
             if (err){
             console.error(err);
 
-            return res.status(403).json({message: "Access token da bi het han hoac khong dung"});
+            return res.status(401).json({message: "Access token da bi het han hoac khong dung"});
         }
         
         //tim user
