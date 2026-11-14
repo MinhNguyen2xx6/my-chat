@@ -4,11 +4,11 @@
 .env
 .env.local
 .env.*.local
+postman/globals/
 *.pem
 *.key
 *.keystore
 *.jks
-
 # ==========================================
 # Node.js (Backend)
 # ==========================================
