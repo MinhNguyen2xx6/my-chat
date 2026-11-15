@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     avatarUrl: {
         type: String //Link CDN de hien thi avt
     },
-    avatarId: {  
+    avatarId: {
         type: String //Cloudinary public_id de xoa hinh di
     },
     bio: {
@@ -38,7 +38,21 @@ const userSchema = new mongoose.Schema({
         type: String,
         sparse: true, //Cho phep null nhung khong duoc trung lap
     },
-}, 
+    //Quen mat khau bang OTP: luu ban hash cua ma + han + so lan nhap sai
+    resetOtp: {
+        type: String,
+        select: false,
+    },
+    resetOtpExpires: {
+        type: Date,
+        select: false,
+    },
+    resetOtpAttempts: {
+        type: Number,
+        default: 0,
+        select: false,
+    },
+},
 {
     timestamps: true //Tao createdAt va updatedAt tu dong
 });
