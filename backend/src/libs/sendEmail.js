@@ -1,25 +1,30 @@
-import nodemailer from 'nodemailer';
-
-// Tao transporter luc gui mail (khong tao luc import),
-// vi dotenv.config() trong server.js chay SAU cac dong import
-const createTransporter = () =>
-    nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: (process.env.EMAIL_PASS || '').replace(/\s+/g, ''), // bo dau cach neu co
-        },
-    });
-
 export const sendEmail = async ({ to, subject, html }) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        throw new Error('Thieu EMAIL_USER hoac EMAIL_PASS trong .env');
-    }
+  const apiKey = process.env.BREVO_API_KEY;
+  const senderEmail = process.env.EMAIL_USER; // Email bạn dùng đăng ký Brevo
 
-    await createTransporter().sendMail({
-        from: `"My Chat App" <${process.env.EMAIL_USER}>`,
-        to,
-        subject,
-        html,
-    });
+  if (!apiKey || !senderEmail) {
+    throw new Error("Thieu BREVO_API_KEY hoac EMAIL_USER trong .env");
+  }
+
+  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "api-key": apiKey,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      sender: { name: "MyChat", email: senderEmail },
+      to: [{ email: to }],
+      subject,
+      htmlContent: html,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(`Brevo API Error: ${JSON.stringify(errorData)}`);
+  }
+
+  return await response.json();
 };
