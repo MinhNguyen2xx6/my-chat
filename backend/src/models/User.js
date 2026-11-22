@@ -38,6 +38,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         sparse: true, //Cho phep null nhung khong duoc trung lap
     },
+    lastSeenAt: {
+        type: Date, //Lan cuoi online, dung de hien "Hoat dong X phut truoc"
+    },
     //Quen mat khau bang OTP: luu ban hash cua ma + han + so lan nhap sai
     resetOtp: {
         type: String,
