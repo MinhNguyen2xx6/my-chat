@@ -68,6 +68,85 @@ export const openConversation = async (req, res) => {
     }
 };
 
+// GET /api/conversations/:id  -> lay chi tiet 1 cuoc tro chuyen
+export const getConversation = async (req, res) => {
+    try {
+        const me = req.user._id;
+        const { id } = req.params;
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({ message: 'id không hợp lệ' });
+        }
+
+        const conv = await Conversation.findOne({ _id: id, participants: me })
+            .populate('participants', USER_FIELDS);
+        if (!conv) {
+            return res.status(404).json({ message: 'Không tìm thấy cuộc trò chuyện' });
+        }
+
+        const other = conv.participants.find((p) => p && String(p._id) !== String(me));
+        return res.status(200).json({
+            conversation: {
+                _id: conv._id,
+                participant: other ? formatParticipant(other) : null,
+                lastMessage: conv.lastMessage,
+                updatedAt: conv.updatedAt,
+            },
+        });
+    } catch (error) {
+        console.error('Loi khi goi getConversation', error);
+        return res.status(500).json({ message: 'Lỗi hệ thống' });
+    }
+};
+
+// DELETE /api/conversations/:id  -> xoa toan bo cuoc tro chuyen
+export const deleteConversation = async (req, res) => {
+    try {
+        const me = req.user._id;
+        const { id } = req.params;
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({ message: 'id không hợp lệ' });
+        }
+
+        const conv = await Conversation.findOne({ _id: id, participants: me });
+        if (!conv) {
+            return res.status(404).json({ message: 'Không tìm thấy cuộc trò chuyện' });
+        }
+
+        await Message.deleteMany({ conversation: id });
+        await Conversation.deleteOne({ _id: id });
+
+        return res.status(200).json({ message: 'Đã xóa cuộc trò chuyện' });
+    } catch (error) {
+        console.error('Loi khi xoa cuoc tro chuyen', error);
+        return res.status(500).json({ message: 'Lỗi hệ thống' });
+    }
+};
+
+// DELETE /api/conversations/:id/messages  -> xoa lich su tin nhan
+export const clearMessages = async (req, res) => {
+    try {
+        const me = req.user._id;
+        const { id } = req.params;
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({ message: 'id không hợp lệ' });
+        }
+
+        const conv = await Conversation.findOne({ _id: id, participants: me });
+        if (!conv) {
+            return res.status(404).json({ message: 'Không tìm thấy cuộc trò chuyện' });
+        }
+
+        await Message.deleteMany({ conversation: id });
+        conv.lastMessage = undefined;
+        await conv.save();
+
+        return res.status(200).json({ message: 'Đã xóa lịch sử tin nhắn' });
+    } catch (error) {
+        console.error('Loi khi xoa lich su tin nhan', error);
+        return res.status(500).json({ message: 'Lỗi hệ thống' });
+    }
+};
+
 // GET /api/conversations  -> chi lay cuoc tro chuyen da co tin nhan
 export const listConversations = async (req, res) => {
     try {

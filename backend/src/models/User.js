@@ -38,6 +38,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         sparse: true, //Cho phep null nhung khong duoc trung lap
     },
+    qrCode: {
+        type: String,
+        unique: true,
+        sparse: true, //Tu dong sinh cho ca tai khoan cu lan moi
+        trim: true,
+        uppercase: true,
+    },
     lastSeenAt: {
         type: Date, //Lan cuoi online, dung de hien "Hoat dong X phut truoc"
     },
